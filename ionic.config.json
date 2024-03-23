@@ -1,0 +1,7 @@
+{
+  "name": "School-Survey",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

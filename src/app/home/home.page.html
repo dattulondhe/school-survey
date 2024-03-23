@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      नमस्कार!
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card class="ion-margin-top" style="margin-top: 5rem;">
+    <ion-card-header color="primary">
+      <ion-card-title>सामान्य माहिती</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <form [formGroup]="form" (ngSubmit)="login()">
+        <!-- <ion-item>
+          <ion-input labelPlacement="floating" formControlName="townName" placeholder="गावाचे नाव">
+            <div slot="label">गावाचे नाव: <ion-text color="danger">*</ion-text></div>
+          </ion-input>
+        </ion-item>
+        <ion-item *ngIf="form.controls['townName'].invalid && form.controls['townName'].touched" lines="none">
+          <p *ngIf="form.controls['townName']?.errors?.['required']" class="error-message">गावाचे नाव आवश्यक आहे.</p>
+        </ion-item> -->
+        <ion-item>
+          <ion-input labelPlacement="floating" formControlName="representativeName" placeholder="प्रतिनिधीचे नाव">
+            <div slot="label">प्रतिनिधीचे नाव: <ion-text color="danger">*</ion-text></div>
+          </ion-input>
+        </ion-item>
+        <ion-item *ngIf="form.controls['representativeName'].invalid && form.controls['representativeName'].touched"
+          lines="none">
+          <p *ngIf="form.controls['representativeName']?.errors?.['required']" class="error-message">प्रतिनिधीचे नाव
+            आवश्यक आहे.</p>
+        </ion-item>
+        <ion-button expand="block" type="submit" [disabled]="form.invalid" class="ion-margin-top">लॉगिन करा</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

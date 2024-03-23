@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      विद्यार्थी सर्वेक्षण
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="exportToExel()">
+        <ion-icon name="download-outline" color="primary" style="zoom:2;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card class="ion-margin-top" style="margin-top: 1rem;" *ngFor="let studentForm of studentForms">
+    <ion-card-header color="primary">
+      <ion-label>पालकांचे नाव: {{ studentForm.parentName }}</ion-label>
+      <ion-label>मोबाइल नंबर: {{ studentForm.parentMobile }}</ion-label>
+      <ion-label>गावाचे नाव: {{ studentForm.townName }}</ion-label>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-card class="ion-margin-top" style="margin-top: 1rem;" *ngFor="let item of studentForm.children; let i=index">
+        <ion-card-header color="tertiary">
+          पाल्य क्र. {{ i + 1 }}
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list>
+            <ion-item>
+              <ion-label>पाल्याचे नाव:</ion-label> {{ item.studentName }}
+            </ion-item>
+            <ion-item>
+              <ion-label>लिंग:</ion-label> {{ item.gender }}
+            </ion-item>
+            <ion-item>
+              <ion-label>इयत्ता प्रवेश:</ion-label> {{ item.standard }}
+            </ion-item>
+            <ion-item>
+              <ion-label>मोबाइल नंबर:</ion-label> {{ item.studentMobile }}
+            </ion-item>
+            <ion-item>
+              <ion-label>शेरा/नोंद:</ion-label> {{ item.comments }}
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-card-content>
+    <ion-card-content *ngIf="studentForm.children.length===0">
+      पाल्य संख्या ० आहे 
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<!-- <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="exportToExel()">
+    <ion-icon name="download-outline" style="zoom:1.5;"></ion-icon>
+  </ion-fab-button>
+</ion-fab> -->

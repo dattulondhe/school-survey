@@ -1,0 +1,151 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      विद्यार्थी सर्वेक्षण
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button type="button" (click)="exportToExel()">
+        <ion-icon name="download-outline" color="primary" style="zoom:2;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card style="margin-top: 2rem;">
+    <ion-card-header color="primary">
+      <ion-card-title>विद्यार्थ्याची माहिती</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+        <ion-item>
+          <ion-label position="floating">पालकांचे नाव</ion-label>
+          <ion-input formControlName="parentName" type="text"></ion-input>
+        </ion-item>
+        <ion-item *ngIf="studentFormControls?.['parentName']?.invalid && studentFormControls?.['parentName']?.touched">
+          <ion-text color="danger" class="error-message"
+            *ngIf="studentFormControls?.['parentName']?.errors?.['required']">
+            पालकांचे नाव आवश्यक आहे.
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">गावाचे नाव</ion-label>
+          <ion-input formControlName="townName" placeholder="गावाचे नाव"> </ion-input>
+        </ion-item>
+        <ion-item *ngIf="studentFormControls?.['townName']?.invalid && studentFormControls?.['townName']?.touched"
+          lines="none">
+          <ion-text color="danger" *ngIf="studentFormControls?.['townName']?.errors?.['required']"
+            class="error-message">गावाचे नाव
+            आवश्यक आहे.</ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">पालकांचा मोबाइल नंबर</ion-label>
+          <ion-input formControlName="parentMobile" type="tel"></ion-input>
+        </ion-item>
+        <ion-item
+          *ngIf="studentFormControls?.['parentMobile']?.invalid && studentFormControls?.['parentMobile']?.touched">
+          <ion-text color="danger" class="error-message" *ngIf="studentFormControls?.['parentMobile']?.errors">
+            मोबाइल नंबर अवैध आहे.
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">पाल्यांची संख्या</ion-label>
+          <ion-input type="number" formControlName="number_of_children"></ion-input>
+        </ion-item>
+        <!-- <ion-item>
+          <ion-label position="floating">विद्यार्थ्याचे नाव</ion-label>
+          <ion-input formControlName="studentName" type="text"></ion-input>
+        </ion-item>
+        <ion-item
+          *ngIf="studentFormControls?.['studentName']?.invalid && studentFormControls?.['studentName']?.touched">
+          <ion-text color="danger" class="error-message"
+            *ngIf="studentFormControls?.['studentName']?.errors?.['required']">
+            विद्यार्थ्याचे नाव आवश्यक आहे.
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">लिंग निवडा</ion-label>
+          <ion-select formControlName="gender">
+            <ion-select-option *ngFor="let gender of genders" [value]="gender">{{ gender }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">मोबाइल नंबर</ion-label>
+          <ion-input formControlName="studentMobile" type="text"></ion-input>
+        </ion-item>
+        <ion-item
+          *ngIf="studentFormControls?.['studentMobile']?.invalid && studentFormControls?.['studentMobile']?.touched">
+          <ion-text color="danger" class="error-message" *ngIf="studentFormControls?.['studentMobile']?.errors">
+            मोबाइल नंबर अवैध आहे.
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">इयत्ता प्रवेश</ion-label>
+          <ion-input formControlName="standard" type="text"></ion-input>
+        </ion-item> -->
+        <!-- <ion-item *ngIf="studentFormControls?.['standard']?.invalid && studentFormControls?.['standard']?.touched">
+          <ion-text color="danger" class="error-message"
+            *ngIf="studentFormControls?.['standard']?.errors?.['required']">
+            इयत्ता आवश्यक आहे.
+          </ion-text>
+        </ion-item> -->
+
+        <div formArrayName="children">
+          <ng-container *ngFor="let childGroup of childrenFormArray.controls; let i = index">
+            <ng-container *ngIf="isFormGroup(childGroup)">
+              <ion-card style="margin-top: 2rem;">
+                <ion-card-header color="tertiary">
+                  <ion-card-title>पाल्य क्र. {{ i +1 }} ची माहिती</ion-card-title>
+                </ion-card-header>
+
+                <ion-card-content>
+                  <ion-item [formGroup]="getChildFormGroup(childGroup)">
+                    <ion-label position="floating">पाल्याचे नाव</ion-label>
+                    <ion-input type="text" formControlName="studentName"></ion-input>
+                  </ion-item>
+                  <ion-item
+                    *ngIf="getChildFormGroup(childGroup)?.get('studentName')?.invalid && getChildFormGroup(childGroup).get('studentName')?.touched">
+                    <ion-text color="danger" class="error-message"
+                      *ngIf="studentFormControls?.['studentName']?.errors?.['required']">
+                      विद्यार्थ्याचे नाव आवश्यक आहे.
+                    </ion-text>
+                  </ion-item>
+                  <!-- <ion-item [formGroup]="getChildFormGroup(childGroup)">
+                    <ion-label position="floating">पाल्याचे लिंग</ion-label>
+                    <ion-select formControlName="gender">
+                      <ion-select-option value="Male">Male</ion-select-option>
+                      <ion-select-option value="Female">Female</ion-select-option>
+                      <ion-select-option value="Other">Other</ion-select-option>
+                    </ion-select>
+                  </ion-item> -->
+                  <ion-item [formGroup]="getChildFormGroup(childGroup)">
+                    <ion-label position="floating">इयत्ता प्रवेश</ion-label>
+                    <ion-input type="number" formControlName="standard"></ion-input>
+                  </ion-item>
+                  <ion-item [formGroup]="getChildFormGroup(childGroup)"
+                    *ngIf="getChildFormGroup(childGroup).value.standard>10">
+                    <ion-label position="floating">शाखा</ion-label>
+                    <ion-input type="Text" formControlName="branch"></ion-input>
+                  </ion-item>
+                  <ion-item [formGroup]="getChildFormGroup(childGroup)">
+                    <ion-label position="floating">मोबाइल नंबर</ion-label>
+                    <ion-input type="tel" formControlName="studentMobile"></ion-input>
+                  </ion-item>
+                  <ion-item [formGroup]="getChildFormGroup(childGroup)">
+                    <ion-label position="floating">शेरा/नोंद</ion-label>
+                    <ion-textarea formControlName="comments"></ion-textarea>
+                  </ion-item>
+                </ion-card-content>
+              </ion-card>
+            </ng-container>
+          </ng-container>
+        </div>
+
+
+
+        <ion-button expand="block" type="submit" [disabled]="studentForm.invalid">सबमिट</ion-button>
+      </form>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
