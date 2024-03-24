@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IndexedDbService } from '../indexed-db.service';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-survey',
@@ -12,7 +13,7 @@ export class SurveyPage implements OnInit {
   studentForm!: FormGroup;
   childGroup!: FormGroup;
   genders = ['Male', 'Female', 'Other'];
-  constructor(private fb: FormBuilder, private indexedDbService: IndexedDbService, private router: Router) {
+  constructor(private fb: FormBuilder, private indexedDbService: IndexedDbService, private router: Router, private http: HttpClient) {
   }
   get studentFormControls() {
     return this.studentForm.controls;
@@ -26,7 +27,8 @@ export class SurveyPage implements OnInit {
       if (Localdata !== null) {
         Localdata = JSON.parse(Localdata)
       }
-      const data: any = { ...this.studentForm.value, ...Localdata }
+      const data: any = { ...this.studentForm.value, ...Localdata };
+      data.sync = false;
       this.indexedDbService.saveStudentForm(data);
 
       this.studentForm.reset();
@@ -36,15 +38,42 @@ export class SurveyPage implements OnInit {
     } else {
       console.log('Form has errors.');
     }
+    this.syncData();
   }
   logout() {
     this.router.navigateByUrl('/home')
   }
+  syncData() {
+    this.indexedDbService.getStudentForms().subscribe(async data => {
+      const unsyncedRows = await data.filter(record => !record.sync);
+      let index = 0;
+      const that = this;
+      function sendData() {
+        const data = {
+          surveyJson: JSON.stringify(unsyncedRows[index])
+        }
+        that.http.post('http://wrpl.coinservices.co.in/api/survey/addSurveyData', data).subscribe((res) => {
+          console.log(res);
+          that.indexedDbService.updateStudentForm(unsyncedRows[index]);
+          index++;
+          if (unsyncedRows.length !== index) {
+            sendData();
+          } else {
+            console.log('synced all')
+          }
+        })
+
+
+      }
+      if (unsyncedRows.length > 0) {
+        sendData();
+      }
+
+    })
+  }
   ngOnInit() {
     this.createStudentForm();
-    this.indexedDbService.getStudentForms().subscribe(data => {
-      console.log(data)
-    })
+    this.syncData()
   }
   createStudentForm() {
     this.studentForm = this.fb.group({

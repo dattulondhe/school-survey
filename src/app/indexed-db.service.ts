@@ -75,7 +75,14 @@ export class IndexedDbService {
       console.error('IndexedDB is not initialized.');
     }
   }
-
+  updateStudentForm(record: any) {
+    if (this.db) {
+      const transaction = this.db.transaction(['studentForms'], 'readwrite');
+      const objectStore = transaction.objectStore('studentForms');
+      record.sync = true;
+      objectStore.put(record);
+    }
+  }
   getStudentForms() {
     return this.studentFormSubject.asObservable();
   }
@@ -95,68 +102,7 @@ export class IndexedDbService {
   private padZero(value: number): string {
     return value < 10 ? `0${value}` : `${value}`;
   }
-  // exportToExcel() {
-  //   this.getStudentForms().subscribe(async (forms: any[]) => {
-  //     // Group forms by townName
-  //     const towns: { [key: string]: any[] } = {};
-  //     forms.forEach(form => {
-  //       if (!towns[form.townName]) {
-  //         towns[form.townName] = [];
-  //       }
-  //       towns[form.townName].push(form);
-  //     });
 
-  //     // Create a new workbook
-  //     const workbook: XLSX.WorkBook = XLSX.utils.book_new();
-
-  //     // Iterate over each town
-  //     for (const townName in towns) {
-  //       if (towns.hasOwnProperty(townName)) {
-  //         const townForms = towns[townName];
-
-  //         // Rearrange student data in the required order
-  //         const formattedStudentData = townForms.map(form => ({
-  //           'अ. क्र.': form.id,
-  //           'पालकांचे नाव': form.parentName,
-  //           'पालकांचा मोबाइल नंबर': form.parentMobile,
-  //           'गावाचे नाव': form.townName,
-  //           'विद्यार्थ्याचे नाव': form.children.map((child: any) => child.studentName).join('\n\n'),
-  //           'मोबाइल नंबर': form.children.map((child: any) => child.studentMobile).join('\n\n'),
-  //           'इयत्ता प्रवेश': form.children.map((child: any) => child.standard).join('\n\n'),
-  //           'शेरा/नोंद': form.children.map((child: any) => child.comments).join('\n\n')
-  //         }));
-  //         // Create a new worksheet for the town
-  //         const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(formattedStudentData, {
-  //           header: ['अ. क्र.', 'पालकांचे नाव', 'पालकांचा मोबाइल नंबर', 'गावाचे नाव', 'विद्यार्थ्याचे नाव', 'मोबाइल नंबर', 'इयत्ता प्रवेश', 'शेरा/नोंद'],
-  //         });
-  //         // Add the worksheet to the workbook
-  //         XLSX.utils.book_append_sheet(workbook, worksheet, townName);
-  //       }
-  //     }
-
-  //     // Save Excel file
-  //     const filename = `सर्वेक्षण_यादी-${this.generateTimestamp()}.xlsx`;
-  //     XLSX.writeFile(workbook, filename);
-
-  //     const wbout = await XLSX.write(workbook, { bookType: 'xlsx', type: 'base64' });
-  //     if (!wbout || wbout.byteLength === 0) {
-  //       console.error('No data to write to file');
-  //       return;
-  //     }
-
-  //     try {
-  //       const path = `${filename}`;
-  //       const result = await Filesystem.writeFile({
-  //         path,
-  //         data: wbout,
-  //         directory: Directory.Documents
-  //       });
-  //       this.shareFile(result.uri)
-  //     } catch (error) {
-  //       console.error('Error writing file', error);
-  //     }
-  //   });
-  // }
   toStandardCase(str: string) {
     return str.toLowerCase().replace(/(?:^|\s)\S/g, function (a) {
       return a.toUpperCase();

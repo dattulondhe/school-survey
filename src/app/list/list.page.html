@@ -29,10 +29,10 @@
               <ion-label>पाल्याचे नाव:</ion-label> {{ item.studentName }}
             </ion-item>
             <ion-item>
-              <ion-label>लिंग:</ion-label> {{ item.gender }}
-            </ion-item>
-            <ion-item>
               <ion-label>इयत्ता प्रवेश:</ion-label> {{ item.standard }}
+            </ion-item>
+            <ion-item *ngIf="item.branch">
+              <ion-label>शाखा:</ion-label> {{ item.branch }}
             </ion-item>
             <ion-item>
               <ion-label>मोबाइल नंबर:</ion-label> {{ item.studentMobile }}
