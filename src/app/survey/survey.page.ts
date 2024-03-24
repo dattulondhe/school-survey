@@ -28,7 +28,7 @@ export class SurveyPage implements OnInit {
         Localdata = JSON.parse(Localdata)
       }
       const data: any = { ...this.studentForm.value, ...Localdata };
-      data.sync = false;
+      // data.sync = false;
       this.indexedDbService.saveStudentForm(data);
 
       this.studentForm.reset();
